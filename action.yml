@@ -1,5 +1,6 @@
 name: 'Package and Publish'
 description: 'Publish actions as OCI artifacts to GHCR'
+version: '1.0.0'
 inputs:
   token:
     required: true
