@@ -54,8 +54,8 @@ function errorResponseHandling(error: any, semver: string): void {
         errorMessage += `Ensure GITHUB_TOKEN has permission "packages: write". `
     } else if (error.response.status === 404) {
         errorMessage += `Ensure GitHub Actions have been enabled. `
-        if (error.response.data.message) {
-          errorMessage += `\nResponded with: "${error.response.data.message}"`
+        if (error.response.data) {
+          errorMessage += `\nResponded with: "${error.response.data}"`
         }
     } else if (error.response.status >= 500) {
         errorMessage += `Server error, is githubstatus.com reporting a GHCR outage? Please re-run the release at a later time. `
