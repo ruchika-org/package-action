@@ -67,7 +67,7 @@ function publishOciArtifact(repository, releaseId, semver) {
                 headers: {
                     Accept: 'application/vnd.github.v3+json',
                     Authorization: `Bearer ${TOKEN}`,
-                    'Content-type': 'application/octet-stream',
+                    'Content-type': 'application/octet-stream'
                 },
                 params: {
                     release_id: releaseId
@@ -87,8 +87,8 @@ function errorResponseHandling(error, semver) {
     if (error.response) {
         let errorMessage = `Failed to create package (status: ${error.response.status}) with semver ${semver}. `;
         if (error.response.status === 400) {
-            if (error.message) {
-                errorMessage += `\nResponded with: "${error.message}"`;
+            if (error.response.data.message) {
+                errorMessage += `\nResponded with: "${error.response.data.message}"`;
             }
         }
         else if (error.response.status === 403) {
@@ -96,20 +96,23 @@ function errorResponseHandling(error, semver) {
         }
         else if (error.response.status === 404) {
             errorMessage += `Ensure GitHub Actions have been enabled. `;
-            if (error.message) {
-                errorMessage += `\nResponded with: "${error.message}"`;
+            if (error.response.data.message) {
+                errorMessage += `\nResponded with: "${error.response.data.message}"`;
             }
         }
         else if (error.response.status >= 500) {
             errorMessage += `Server error, is githubstatus.com reporting a GHCR outage? Please re-run the release at a later time. `;
-            if (error.message) {
-                errorMessage += `\nResponded with: "${error.message}"`;
+            if (error.response.data.message) {
+                errorMessage += `\nResponded with: "${error.response.data.message}"`;
             }
         }
         core.setFailed(errorMessage);
     }
+    else if (error.request) {
+        core.setFailed(error.request);
+    }
     else {
-        core.setFailed(`An unexpected error occured with error:\n${JSON.stringify(error)}`);
+        core.setFailed(`An unexpected error occured with error:\n${JSON.stringify(error.message)}`);
     }
 }
 
@@ -160,6 +163,7 @@ const apiClient = __importStar(__nccwpck_require__(5883));
 const tarHelper = __importStar(__nccwpck_require__(3368));
 const github = __importStar(__nccwpck_require__(5438));
 function run() {
+    var _a, _b, _c, _d;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const repository = process.env.GITHUB_REPOSITORY || '';
@@ -167,14 +171,27 @@ function run() {
                 core.setFailed(`Could not find Repository!`);
                 return;
             }
-            if (github.context.eventName !== 'release') {
-                core.setFailed('Please ensure you have the workflow trigger as release.');
+            const eventName = github.context.eventName;
+            let releaseId;
+            let semver;
+            if (eventName === 'release') {
+                releaseId = github.context.payload.release.id;
+                semver = github.context.payload.release.tag_name;
+            }
+            else if (eventName === 'repository_dispatch') {
+                releaseId = (_b = (_a = github.context.payload.client_payload) === null || _a === void 0 ? void 0 : _a.release) === null || _b === void 0 ? void 0 : _b.id;
+                semver = (_d = (_c = github.context.payload.client_payload) === null || _c === void 0 ? void 0 : _c.release) === null || _d === void 0 ? void 0 : _d.tag_name;
+                if (releaseId === undefined || semver === undefined) {
+                    core.setFailed('Missing release.id or release.tag_name in client_payload.');
+                    return;
+                }
+            }
+            else {
+                core.setFailed('The action can only be used with release or repository_dispatch event.');
                 return;
             }
             const path = core.getInput('path');
             const tarBallCreated = yield tarHelper.createTarBall(path);
-            const releaseId = github.context.payload.release.id;
-            const semver = github.context.payload.release.tag_name;
             if (tarBallCreated) {
                 yield apiClient.publishOciArtifact(repository, releaseId, semver);
             }
@@ -315,7 +332,8 @@ function isActionYamlPresentInPathSrc(pathArray) {
     });
     // Returns true as soon as action.y(a)ml is found in any of the paths in the provided path input
     return pathArray.some(filePath => {
-        return (fs.existsSync(`${filePath}/action.yml`) || fs.existsSync(`${filePath}/action.yaml`));
+        return (fs.existsSync(`${filePath}/action.yml`) ||
+            fs.existsSync(`${filePath}/action.yaml`));
     });
 }
 exports.isActionYamlPresentInPathSrc = isActionYamlPresentInPathSrc;
