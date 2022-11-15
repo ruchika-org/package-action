@@ -2078,7 +2078,7 @@ function removeTarArchive() {
         try {
             if (fs.existsSync(path)) {
                 core.debug(`Deleting temp folder "${path}"`);
-                yield fs.unlinkSync(path);
+                fs.unlinkSync(path);
             }
             core.info(`Action archive cleanup done!`);
         }

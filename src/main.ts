@@ -10,16 +10,30 @@ export async function run(): Promise<void> {
       core.setFailed(`Could not find Repository!`)
       return
     }
-    if (!isValidEventTrigger) {
-      core.setFailed('Please ensure you have the workflow trigger as release or repository_dispatch.')
+    const eventName: string = github.context.eventName
+    let releaseId: string
+    let semver: string
+    if (eventName === 'release') {
+      releaseId = github.context.payload.release.id
+      semver = github.context.payload.release.tag_name
+    } else if (eventName === 'repository_dispatch') {
+      releaseId = github.context.payload.client_payload?.release?.id
+      semver = github.context.payload.client_payload?.release?.tag_name
+      if (releaseId === undefined || semver === undefined) {
+        core.setFailed(
+          'Missing release.id or release.tag_name in client_payload.'
+        )
+        return
+      }
+    } else {
+      core.setFailed(
+        'The action can only be used with release or repository_dispatch event.'
+      )
       return
     }
 
     const path: string = core.getInput('path')
     const tarBallCreated = await tarHelper.createTarBall(path)
-    const isReleaseEvent = github.context.eventName == "release"
-    const releaseId: string = isReleaseEvent ? github.context.payload.release.id : github.context.payload.client_payload.release.id
-    const semver: string = isReleaseEvent ? github.context.payload.release.tag_name : github.context.payload.client_payload.release.tag_name
 
     if (tarBallCreated) {
       await apiClient.publishOciArtifact(repository, releaseId, semver)
@@ -27,14 +41,6 @@ export async function run(): Promise<void> {
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
-}
-
-function isValidEventTrigger(): boolean {
-  const eventName = github.context.eventName;
-  const validEventTypes = ['release', 'repository_dispatch']
-  if(validEventTypes.includes(eventName))
-    return true;
-  return false;
 }
 
 run()
