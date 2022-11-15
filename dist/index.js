@@ -87,8 +87,8 @@ function errorResponseHandling(error, semver) {
     if (error.response) {
         let errorMessage = `Failed to create package (status: ${error.response.status}) with semver ${semver}. `;
         if (error.response.status === 400) {
-            if (error.message) {
-                errorMessage += `\nResponded with: "${error.message}"`;
+            if (error.response.data.message) {
+                errorMessage += `\nResponded with: "${error.response.data.message}"`;
             }
         }
         else if (error.response.status === 403) {
@@ -96,20 +96,23 @@ function errorResponseHandling(error, semver) {
         }
         else if (error.response.status === 404) {
             errorMessage += `Ensure GitHub Actions have been enabled. `;
-            if (error.message) {
-                errorMessage += `\nResponded with: "${error.message}"`;
+            if (error.response.data.message) {
+                errorMessage += `\nResponded with: "${error.response.data.message}"`;
             }
         }
         else if (error.response.status >= 500) {
             errorMessage += `Server error, is githubstatus.com reporting a GHCR outage? Please re-run the release at a later time. `;
-            if (error.message) {
-                errorMessage += `\nResponded with: "${error.message}"`;
+            if (error.response.data.message) {
+                errorMessage += `\nResponded with: "${error.response.data.message}"`;
             }
         }
         core.setFailed(errorMessage);
     }
+    else if (error.request) {
+        core.setFailed(error.request);
+    }
     else {
-        core.setFailed(`An unexpected error occured with error:\n${JSON.stringify(error)}`);
+        core.setFailed(`An unexpected error occured with error:\n${JSON.stringify(error.message)}`);
     }
 }
 
