@@ -33,9 +33,7 @@ describe('run function', () => {
       return inputs[name]
     })
 
-    jest
-      .spyOn(tarHelper, 'createTarBall')
-      .mockImplementation(tarHelper.createTarBall)
+    jest.spyOn(tarHelper, 'createTarBall').mockImplementation(tarHelper.createTarBall)
 
     await run()
 
@@ -65,7 +63,7 @@ describe('run function', () => {
     expect(apiClient.publishOciArtifact).not.toHaveBeenCalled()
     expect(core.setFailed).toHaveBeenCalledTimes(1)
     expect(core.setFailed).toHaveBeenCalledWith(
-      `The action can only be used with release or repository_dispatch event.`
+      `Please ensure you have the workflow trigger as release.`
     )
   })
 

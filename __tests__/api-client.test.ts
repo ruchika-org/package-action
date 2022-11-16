@@ -78,14 +78,14 @@ describe('create and publish', () => {
     try {
       await publishOciArtifact('monalisa/is-awesome', '154528', '1.0.1')
     } catch (err) {
-      expect(axios.post).toHaveBeenCalled()
-      expect(axios.post).toHaveBeenCalledTimes(1)
+        expect(axios.post).toHaveBeenCalled()
+        expect(axios.post).toHaveBeenCalledTimes(1)
 
-      expect(core.setFailed).toHaveBeenCalledWith({status: 400})
-      expect(core.setFailed).toHaveBeenCalledWith(
-        `Failed to create package (status: 400) with semver 1.0.1. 
+        expect(core.setFailed).toHaveBeenCalledWith({status: 400})
+        expect(core.setFailed).toHaveBeenCalledWith(
+          `Failed to create package (status: 400) with semver 1.0.1. 
           Responded with: "Error publishing actions packages for ${process.env.GITHUB_REPOSITORY}:1.0.1 on ghcr.io"`
-      )
+        )
     }
   })
 
@@ -136,14 +136,14 @@ describe('create and publish', () => {
     try {
       await publishOciArtifact('monalisa/is-awesome', '154528', '1.0.1')
     } catch (err) {
-      expect(axios.post).toHaveBeenCalled()
-      expect(axios.post).toHaveBeenCalledTimes(1)
+        expect(axios.post).toHaveBeenCalled()
+        expect(axios.post).toHaveBeenCalledTimes(1)
 
-      expect(core.setFailed).toHaveBeenCalledWith({status: 500})
-      expect(core.setFailed).toHaveBeenLastCalledWith(
-        `Failed to create package (status: 500) with semver 1.0.1. Server error, is githubstatus.com reporting a GHCR outage? Please re-run the release at a later time. 
+        expect(core.setFailed).toHaveBeenCalledWith({status: 500})
+        expect(core.setFailed).toHaveBeenLastCalledWith(
+          `Failed to create package (status: 500) with semver 1.0.1. Server error, is githubstatus.com reporting a GHCR outage? Please re-run the release at a later time. 
           Responded with: "Internal Server error"`
-      )
+        )
     }
   })
 })

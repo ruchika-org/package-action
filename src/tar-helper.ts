@@ -1,11 +1,12 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as fs from 'fs'
+import * as github from '@actions/github'
 
 // Creates a tar.gzip of the inputs specified in path input or the entire contents
 export async function createTarBall(path: string): Promise<boolean> {
   const tempDir = '/tmp'
-  const repoNwo: string = process.env.GITHUB_REPOSITORY || ''
+  const repoNwo: string = process.env.GITHUB_REPOSITORY || '';
   const repoParse = repoNwo.split('/')
   const repoName: string = repoParse[1]
   try {
@@ -21,7 +22,7 @@ export async function createTarBall(path: string): Promise<boolean> {
     }
 
     if (!fs.existsSync(`${tempDir}/${repoName}`)) {
-      fs.mkdirSync(`${tempDir}/${repoName}`)
+      fs.mkdirSync(`${tempDir}/${repoName}`);
     }
 
     for await (const filePath of pathArray) {
@@ -29,25 +30,25 @@ export async function createTarBall(path: string): Promise<boolean> {
     }
 
     if (!isActionYamlPresentInPathSrc(pathArray)) {
-      await copyActionFile(repoName)
+      await copyActionFile(repoName);
     }
 
     const cmd = `tar -czf ${tempDir}/archive.tar.gz -C ${tempDir} ${repoName}`
 
     await exec.exec(cmd)
     core.info(`Tar ball created.`)
-
+    
     return true
   } catch (error) {
-    let errorMessage = `Creation of tarball failed! `
-    if (error instanceof Error && error.message)
-      errorMessage += `${error.message}`
-    core.setFailed(errorMessage)
-    return false
-  } finally {
-    if (fs.existsSync(`${tempDir}/${repoName}`)) {
-      await exec.exec(`rm -rf ${tempDir}/${repoName}`)
-    }
+      let errorMessage = `Creation of tarball failed! `
+      if (error instanceof Error && error.message)
+        errorMessage += `${error.message}`
+      core.setFailed(errorMessage)
+      return false
+  } finally { 
+      if(fs.existsSync(`${tempDir}/${repoName}`)){
+        await exec.exec(`rm -rf ${tempDir}/${repoName}`)
+      }
   }
 }
 
@@ -66,37 +67,35 @@ export function isActionYamlPresentInPathSrc(pathArray: string[]): boolean {
 
   // Transform the paths array to remove the traling '/' if it is present in the path input
   pathArray = pathArray.map(e => {
-    if (e.endsWith('/')) return e.slice(0, -1)
+    if (e.endsWith('/')) 
+      return e.slice(0, -1)
     return e
   })
 
   // Returns true as soon as action.y(a)ml is found in any of the paths in the provided path input
   return pathArray.some(filePath => {
     return (
-      fs.existsSync(`${filePath}/action.yml`) ||
-      fs.existsSync(`${filePath}/action.yaml`)
+      fs.existsSync(`${filePath}/action.yml`) || fs.existsSync(`${filePath}/action.yaml`)
     )
   })
 }
 
 export async function copyActionFile(repoName: string): Promise<void> {
-  let actionFileWithExtension = ' '
+  let actionFileWithExtension = ' ';
   const tempDir = '/tmp'
-  if (fs.existsSync('action.yml')) {
+  if(fs.existsSync('action.yml')){
     actionFileWithExtension = 'action.yml'
   } else if (fs.existsSync('action.yaml')) {
-    actionFileWithExtension = 'action.yaml'
-  }
+      actionFileWithExtension = 'action.yaml'
+  } 
 
-  if (actionFileWithExtension === ' ') {
+  if(actionFileWithExtension === ' '){
     throw new Error(
       `action.y(a)ml not found. Release packages can be created only for action repositories.`
     )
-  } else if (
-    fs.existsSync(`${tempDir}/${repoName}/${actionFileWithExtension}`)
-  ) {
-    core.debug(`action.y(a)ml file already exists in ${tempDir}/${repoName}.`)
+  } else if(fs.existsSync(`${tempDir}/${repoName}/${actionFileWithExtension}`)){
+      core.debug(`action.y(a)ml file already exists in ${tempDir}/${repoName}.`)
   } else {
-    await exec.exec(`cp ${actionFileWithExtension} ${tempDir}/${repoName}`)
+      await exec.exec(`cp ${actionFileWithExtension} ${tempDir}/${repoName}`)
   }
 }
