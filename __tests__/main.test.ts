@@ -33,7 +33,9 @@ describe('run function', () => {
       return inputs[name]
     })
 
-    jest.spyOn(tarHelper, 'createTarBall').mockImplementation(tarHelper.createTarBall)
+    jest
+      .spyOn(tarHelper, 'createTarBall')
+      .mockImplementation(tarHelper.createTarBall)
 
     await run()
 
