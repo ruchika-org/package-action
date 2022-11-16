@@ -12,13 +12,13 @@ export async function run(): Promise<void> {
 async function removeTarArchive(): Promise<void> {
   const path = '/tmp/archive.tar.gz'
   try {
-    if (fs.existsSync(path)) {
+    if(fs.existsSync(path)){
       core.debug(`Deleting temp folder "${path}"`)
-      fs.unlinkSync(path)
+      await fs.unlinkSync(path)
     }
     core.info(`Action archive cleanup done!`)
   } catch (err) {
-    core.info(`Cleanup job failed to complete with error: ${err}`)
+      core.info(`Cleanup job failed to complete with error: ${err}`)
   }
 }
 run()
