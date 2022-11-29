@@ -88,32 +88,28 @@ function errorResponseHandling(error, semver) {
         let errorMessage = `Failed to create package (status: ${error.response.status}) with semver ${semver}. `;
         switch (error.response.status) {
             case 400: {
-                if (error.response.data.message) {
-                    errorMessage += `\nResponded with: "${error.response.data.message}"`;
-                }
+                errorMessage += `Ensure GitHub Actions have been enabled. `;
+                break;
+            }
+            case 401: {
+                errorMessage += `Ensure GITHUB_TOKEN has permission "packages: write". `;
                 break;
             }
             case 403: {
                 errorMessage += `Ensure GITHUB_TOKEN has permission "packages: write". `;
-                if (error.response.data.message) {
-                    errorMessage += `\nResponded with: "${error.response.data.message}"`;
-                }
                 break;
             }
             case 404: {
                 errorMessage += `Ensure GitHub Actions have been enabled. `;
-                if (error.response.data.message) {
-                    errorMessage += `\nResponded with: "${error.response.data.message}"`;
-                }
                 break;
             }
             default: {
                 errorMessage += `Server error, is githubstatus.com reporting a GHCR outage? Please re-run the release at a later time. `;
-                if (error.response.data.message) {
-                    errorMessage += `\nResponded with: "${error.response.data.message}"`;
-                }
                 break;
             }
+        }
+        if (error.response.data.message) {
+            errorMessage += `\nResponded with: "${error.response.data.message}"`;
         }
         core.setFailed(errorMessage);
     }
