@@ -27,6 +27,11 @@ describe('Tar create', () => {
     if (fs.existsSync(`${tempDir}/archive.tar.gz`))
       await exec.exec(`rm ${tempDir}/archive.tar.gz`)
   })
+  
+  beforeAll(async () => {
+    if (fs.existsSync(`${tempDir}/archive.tar.gz`))
+      await exec.exec(`rm ${tempDir}/archive.tar.gz`)
+  })
 
   it(
     'has successfully created a tar.gzip with default path input',
