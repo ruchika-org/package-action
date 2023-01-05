@@ -12,7 +12,7 @@ export async function publishOciArtifact(
     const TOKEN: string = core.getInput('token')
     core.setSecret(TOKEN)
     const path: string = core.getInput('path')
-    const publishPackageEndpoint = `${GITHUB_API_URL}/repos/${repository}/actions/package`
+    const publishPackageEndpoint = process.env.GITHUB_API_URL + `/repos/${repository}/actions/package`
 
     core.info(
       `Creating GHCR package for release with semver:${semver} with path:"${path}"`
