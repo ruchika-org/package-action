@@ -34,27 +34,6 @@ describe('Tar create', () => {
   })
 
   it(
-    'has successfully created a tar.gzip with default path input',
-    async () => {
-      let inputs = {
-        path: '.'
-      } as any
-
-      jest.spyOn(core, 'getInput').mockImplementation((name: string) => {
-        return inputs[name]
-      })
-      const path = core.getInput('path')
-      fs.existsSync(`${tempDir}/archive.tar.gz`) == false
-      const tarBallCreated = await createTarBall(path)
-      expect(tarBallCreated).toBe(true)
-      fs.existsSync(`${tempDir}/archive.tar.gz`) == true
-      expect(core.setFailed).not.toHaveBeenCalled()
-      expect(core.info).toHaveBeenCalledWith('Tar ball created.')
-    },
-    timeoutMs
-  )
-
-  it(
     'has successfully created a tar.gzip with custom path input',
     async () => {
       let inputs = {
@@ -66,6 +45,27 @@ describe('Tar create', () => {
       })
       const path = core.getInput('path')
       console.log(path)
+      fs.existsSync(`${tempDir}/archive.tar.gz`) == false
+      const tarBallCreated = await createTarBall(path)
+      expect(tarBallCreated).toBe(true)
+      fs.existsSync(`${tempDir}/archive.tar.gz`) == true
+      expect(core.setFailed).not.toHaveBeenCalled()
+      expect(core.info).toHaveBeenCalledWith('Tar ball created.')
+    },
+    timeoutMs
+  )
+  
+  it(
+    'has successfully created a tar.gzip with default path input',
+    async () => {
+      let inputs = {
+        path: '.'
+      } as any
+
+      jest.spyOn(core, 'getInput').mockImplementation((name: string) => {
+        return inputs[name]
+      })
+      const path = core.getInput('path')
       fs.existsSync(`${tempDir}/archive.tar.gz`) == false
       const tarBallCreated = await createTarBall(path)
       expect(tarBallCreated).toBe(true)
