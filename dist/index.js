@@ -42,16 +42,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.publishOciArtifact = exports.getApiBaseUrl = void 0;
+exports.publishOciArtifact = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const axios_1 = __importDefault(__nccwpck_require__(6545));
 const fs = __importStar(__nccwpck_require__(7147));
-//returns the API Base Url
-function getApiBaseUrl() {
-    const githubApiUrl = 'https://api.github.com';
-    return githubApiUrl;
-}
-exports.getApiBaseUrl = getApiBaseUrl;
 // Publish the Action Artifact to GHCR by calling the post API
 function publishOciArtifact(repository, releaseId, semver) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -59,7 +53,7 @@ function publishOciArtifact(repository, releaseId, semver) {
             const TOKEN = core.getInput('token');
             core.setSecret(TOKEN);
             const path = core.getInput('path');
-            const publishPackageEndpoint = `${getApiBaseUrl()}/repos/${repository}/actions/package`;
+            const publishPackageEndpoint = process.env.GITHUB_API_URL + `/repos/${repository}/actions/package`;
             core.info(`Creating GHCR package for release with semver:${semver} with path:"${path}"`);
             const tempDir = '/tmp';
             const fileStream = fs.createReadStream(`${tempDir}/archive.tar.gz`);
