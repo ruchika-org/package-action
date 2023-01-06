@@ -4,8 +4,7 @@ import * as fs from 'fs'
 
 //returns the API Base Url
 export function getApiBaseUrl(): string {
-  const githubApiUrl = 'https://api.github.com'
-  return githubApiUrl
+  return process.env.GITHUB_API_URL || 'https://api.github.com'
 }
 
 // Publish the Action Artifact to GHCR by calling the post API

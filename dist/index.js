@@ -48,8 +48,7 @@ const axios_1 = __importDefault(__nccwpck_require__(6545));
 const fs = __importStar(__nccwpck_require__(7147));
 //returns the API Base Url
 function getApiBaseUrl() {
-    const githubApiUrl = 'https://api.github.com';
-    return githubApiUrl;
+    return process.env.GITHUB_API_URL || 'https://api.github.com';
 }
 exports.getApiBaseUrl = getApiBaseUrl;
 // Publish the Action Artifact to GHCR by calling the post API

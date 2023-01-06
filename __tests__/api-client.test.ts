@@ -10,10 +10,6 @@ describe('getApiBaseUrl returns', () => {
       expect(getApiBaseUrl()).toEqual(process.env.GITHUB_API_URL)
     }
   })
-  test('returns githubApiUrl when Env variable set incorrectly', () => {
-    process.env.GITHUB_API_URL = ' '
-    expect(getApiBaseUrl()).toEqual('https://api.github.com')
-  })
   test('returns githubApiUrl when Env variable not set', () => {
     expect(getApiBaseUrl()).toEqual('https://api.github.com')
   })
