@@ -2,6 +2,11 @@ import * as core from '@actions/core'
 import axios from 'axios'
 import * as fs from 'fs'
 
+//returns the API Base Url
+export function getApiBaseUrl(): string {
+  return process.env.GITHUB_API_URL || 'https://api.github.com'
+}
+
 // Publish the Action Artifact to GHCR by calling the post API
 export async function publishOciArtifact(
   repository: string,
@@ -12,7 +17,7 @@ export async function publishOciArtifact(
     const TOKEN: string = core.getInput('token')
     core.setSecret(TOKEN)
     const path: string = core.getInput('path')
-    const publishPackageEndpoint = process.env.GITHUB_API_URL + `/repos/${repository}/actions/package`
+    const publishPackageEndpoint = `${getApiBaseUrl()}/repos/${repository}/actions/package`
 
     core.info(
       `Creating GHCR package for release with semver:${semver} with path:"${path}"`
