@@ -89,7 +89,7 @@ function errorResponseHandling(error, semver) {
         switch (error.response.status) {
             case 400:
             case 404: {
-                errorMessage += `Ensure GitHub Actions have been enabled. `;
+                errorMessage += `Something went wrong. `;
                 break;
             }
             case 401:
