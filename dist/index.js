@@ -263,6 +263,8 @@ function createTarBall(path) {
             try {
                 for (var pathArray_1 = __asyncValues(pathArray), pathArray_1_1; pathArray_1_1 = yield pathArray_1.next(), !pathArray_1_1.done;) {
                     const filePath = pathArray_1_1.value;
+                    core.info(`Copying ${filePath} to ${tempDir}/${repoName}`);
+                    core.debug(`cp -r ${filePath} ${tempDir}/${repoName}`);
                     yield exec.exec(`cp -r ${filePath} ${tempDir}/${repoName}`);
                 }
             }

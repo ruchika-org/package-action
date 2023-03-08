@@ -25,6 +25,8 @@ export async function createTarBall(path: string): Promise<boolean> {
     }
 
     for await (const filePath of pathArray) {
+      core.info(`Copying ${filePath} to ${tempDir}/${repoName}`)
+      core.debug(`cp -r ${filePath} ${tempDir}/${repoName}`)
       await exec.exec(`cp -r ${filePath} ${tempDir}/${repoName}`)
     }
 
