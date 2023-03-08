@@ -265,7 +265,7 @@ function createTarBall(path) {
                     var filePath = pathArray_1_1.value;
                     // Remove trailing '/' if present in the path input
                     filePath = filePath.trim().replace(/\/$/, '');
-                    yield exec.exec(`cp -r ${filePath}/* ${tempDir}/${repoName}`);
+                    yield exec.exec(`cp -r ${filePath}/. ${tempDir}/${repoName}`);
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }

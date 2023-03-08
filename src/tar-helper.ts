@@ -27,7 +27,7 @@ export async function createTarBall(path: string): Promise<boolean> {
     for await (var filePath of pathArray) {
       // Remove trailing '/' if present in the path input
       filePath = filePath.trim().replace(/\/$/, '')
-      await exec.exec(`cp -r ${filePath}/* ${tempDir}/${repoName}`)
+      await exec.exec(`cp -r ${filePath}/. ${tempDir}/${repoName}`)
     }
 
     if (!isActionYamlPresentInPathSrc(pathArray)) {
