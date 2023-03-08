@@ -262,7 +262,9 @@ function createTarBall(path) {
             }
             try {
                 for (var pathArray_1 = __asyncValues(pathArray), pathArray_1_1; pathArray_1_1 = yield pathArray_1.next(), !pathArray_1_1.done;) {
-                    const filePath = pathArray_1_1.value;
+                    var filePath = pathArray_1_1.value;
+                    // Remove trailing '/' if present in the path input
+                    filePath = filePath.trim().replace(/\/$/, '');
                     yield exec.exec(`cp -r ${filePath}/* ${tempDir}/${repoName}`);
                 }
             }

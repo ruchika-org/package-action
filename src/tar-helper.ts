@@ -24,7 +24,9 @@ export async function createTarBall(path: string): Promise<boolean> {
       fs.mkdirSync(`${tempDir}/${repoName}`)
     }
 
-    for await (const filePath of pathArray) {
+    for await (var filePath of pathArray) {
+      // Remove trailing '/' if present in the path input
+      filePath = filePath.trim().replace(/\/$/, '')
       await exec.exec(`cp -r ${filePath}/* ${tempDir}/${repoName}`)
     }
 
