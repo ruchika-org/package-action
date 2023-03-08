@@ -263,7 +263,7 @@ function createTarBall(path) {
             try {
                 for (var pathArray_1 = __asyncValues(pathArray), pathArray_1_1; pathArray_1_1 = yield pathArray_1.next(), !pathArray_1_1.done;) {
                     const filePath = pathArray_1_1.value;
-                    yield exec.exec(`cp -r ${filePath} ${tempDir}/${repoName}`);
+                    yield exec.exec(`cp -r ${filePath}/* ${tempDir}/${repoName}`);
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
