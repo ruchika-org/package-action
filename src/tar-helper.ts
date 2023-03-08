@@ -64,14 +64,10 @@ export function isActionYamlPresentInPathSrc(pathArray: string[]): boolean {
   if (pathArray.includes('action.yml') || pathArray.includes('action.yaml'))
     return true
 
-  // Transform the paths array to remove the traling '/' if it is present in the path input
-  pathArray = pathArray.map(e => {
-    if (e.endsWith('/')) return e.slice(0, -1)
-    return e
-  })
-
   // Returns true as soon as action.y(a)ml is found in any of the paths in the provided path input
   return pathArray.some(filePath => {
+    // remove trailing '/' if present
+    filePath =  filePath.replace(/\/$/, '')
     return (
       fs.existsSync(`${filePath}/action.yml`) ||
       fs.existsSync(`${filePath}/action.yaml`)
