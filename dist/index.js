@@ -266,6 +266,7 @@ function createTarBall(path) {
                     core.info(`Copying ${filePath} to ${tempDir}/${repoName}`);
                     core.debug(`cp -r ${filePath} ${tempDir}/${repoName}`);
                     yield exec.exec(`cp -r ${filePath} ${tempDir}/${repoName}`);
+                    yield exec.exec(`ls -l ${tempDir}/${repoName}`);
                 }
             }
             catch (e_1_1) { e_1 = { error: e_1_1 }; }

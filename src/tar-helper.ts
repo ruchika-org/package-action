@@ -28,6 +28,7 @@ export async function createTarBall(path: string): Promise<boolean> {
       core.info(`Copying ${filePath} to ${tempDir}/${repoName}`)
       core.debug(`cp -r ${filePath} ${tempDir}/${repoName}`)
       await exec.exec(`cp -r ${filePath} ${tempDir}/${repoName}`)
+      await exec.exec(`ls -l ${tempDir}/${repoName}`)
     }
 
     if (!isActionYamlPresentInPathSrc(pathArray)) {
